@@ -11,8 +11,9 @@ const int b5 = 6;
 const int buzzer = 13;
 
 // Variáveis
-int tempoEstudo = 5; // 25 minutos em segundos (1500)
-int tempoDescanso = 5;  // 5 minutos em segundos (300)
+//5 segundos a mais para apresentar na aula
+int tempoEstudo = 1505; // 25 minutos em segundos (1500)
+int tempoDescanso = 305;  // 5 minutos em segundos (300)
 int numRept = 2;
 bool timersAtivo = false;
 bool emEstudo = true;
@@ -26,7 +27,7 @@ void limparLinha(int linha){
   lcd.setCursor(0, linha);
 }
 
-// Função para o botão enviar apenas um sinal
+// Função para o botão enviar apenas um sinal (tirando o bounce)
 bool statusBotao(int pino){
   if (digitalRead(pino) == HIGH){
     delay(500);
@@ -51,7 +52,7 @@ void setup(){
   lcd.setCursor(1, 0);
   lcd.print("Comecar Estudo");
   lcd.setCursor(1, 1);
-  lcd.print("Pressione Menu");  
+  lcd.print("Pressione B1");  
 }
  
 void loop(){
@@ -113,13 +114,13 @@ void abrirMenu(){
       lcd.print(tempoEstudo / 60);
       lcd.print(" min  ");
     }
-    else if (statusBotao(b2)){
+    else if (statusBotao(b2) && tempoEstudo > 0){
       tempoEstudo -= 300; // -5 minutos
       lcd.setCursor(9, 0);
       lcd.print(tempoEstudo / 60);
       lcd.print(" min  ");
     }
-    if (statusBotao(b4)){
+    if (statusBotao(b4) && tempoDescanso > 0){
       tempoDescanso -= 60;// -1 minutos
       lcd.setCursor(9, 1);
       lcd.print(tempoDescanso / 60);
@@ -163,7 +164,7 @@ void numRepeticoes(){
      lcd.print(numRept);
      lcd.print(" vezes  ");
    }
-   else if (statusBotao(b4)){
+   else if (statusBotao(b4) && numRept > 1){
      numRept -= 1;
      lcd.setCursor(0, 1);
      lcd.print(numRept);
@@ -222,14 +223,14 @@ void executarTimers(){
    while (tempoDescanso > 0) {
     lcd.setCursor(0, 0);
     lcd.print("Descanso: ");
-      if (tempoDescanso > 0) {
+    if (tempoDescanso > 0) {
        limparLinha(1);
        lcd.setCursor(0, 1);
        lcd.print(tempoDescanso / 60);
        lcd.print(" min ");
        lcd.print(tempoDescanso % 60);
        lcd.print(" sec ");
-      }
+     }
     delay(1000); // Atraso de 1 segundo
     tempoDescanso--; // Retirar 1 segundo
    }
